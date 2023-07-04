@@ -1,0 +1,32 @@
+mysql:
+  host: 127.0.0.1
+  port: 3306
+  db: go_blog
+  user: root
+  password: swlwjl
+  log_level: dev
+  config: "charset=utf8mb4&parseTime=true"
+system:
+  host: "0.0.0.0"
+  port: 9527
+  env: release
+logger:
+  level: debug
+  prefix: "go_blog"
+  director: log
+  show_line: true
+  log_in_console: true
+qiniu:
+  access_key: "LyPus3VQOK4QdLEE6FRMRfFY3u0z7Fkq3QF6ONIn"
+  secret_key: "K16csbFq4onVbtLlJjjwgZmQsqId8RW0X4OHRfX5"
+  bucket: "senlg"
+  cdn: "rx1m9mu26.hb-bkt.clouddn.com"
+  zone: "华北-河北"
+  size: 5120
+upload_config:
+  base_path: "static"
+  limit_size: 10
+  img_access_type:
+    - "jpeg"
+    - "png"
+    - "jpg"
