@@ -1,6 +1,0 @@
-http.http
-log.log
-/tmp
-/static
-fresh.conf
-.gitignore
