@@ -7,6 +7,7 @@ import (
 	"go_blog/models"
 	"go_blog/models/req"
 	"go_blog/models/res"
+	jwtauth "go_blog/utils/jwt_auth"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -62,33 +63,34 @@ func (u *User) CreateUserInfo(ctx *gin.Context) {
 func (u *User) Login(ctx *gin.Context) {
 	var loginJson req.Login
 	var userModel models.UserModel
+	response := common.Response{}
 	fmt.Printf("ctx.Request.Header: %+v\n", ctx.ClientIP())
 	err := ctx.BindJSON(&loginJson)
-
+	if err != nil {
+		response.ResultWithError(ctx, common.ErrorStatus, err)
+	}
 	global.DB.Preload("ArticleModels").Preload("CollectsModels").Where("user_name = ?", loginJson.UserName).Find(&userModel)
+	j := jwtauth.Jwt{}
+	claim := &jwtauth.MyCustomClaims{
+		UserID:   userModel.ID,
+		Role:     userModel.Role,
+		Username: userModel.UserName,
+	}
+	token, err := j.CreateToken(*claim)
+	if err != nil {
+		response.ResultWithError(ctx, common.ErrorStatus, err)
+	}
 
 	userInfo := res.UserInfo{
-		UserName:  userModel.UserName,
-		NickName:  userModel.NickName,
-		AvatarUrl: userModel.AvatarUrl,
-		Addr:      userModel.Addr,
-		// Token:         userModel.Token,
+		UserName:      userModel.UserName,
+		NickName:      userModel.NickName,
+		AvatarUrl:     userModel.AvatarUrl,
+		Addr:          userModel.Addr,
+		Token:         token,
 		Role:          userModel.Role,
 		Phone:         userModel.Phone,
 		ReleaseCount:  len(userModel.ArticleModels),
 		CollectsCount: len(userModel.CollectsModels),
-	}
-	res := common.Response{
-		Code: common.SucceedStatus,
-		Data: &userInfo,
-	}
-	if err != nil {
-		global.Log.Errorln(err.Error())
-		return
-	}
-	if global.DB.Error != nil {
-		global.Log.Warnln(global.DB.Error)
-		return
 	}
 	global.DB.Create(&models.LoginRecordModel{
 		IP:          ctx.ClientIP(),
@@ -96,5 +98,10 @@ func (u *User) Login(ctx *gin.Context) {
 		LoginTime:   time.Now(),
 		LoginAdress: loginJson.LoginAdress,
 	})
-	res.Result(ctx)
+	if global.DB.Error != nil {
+		global.Log.Warnln(global.DB.Error)
+		response.ResultWithError(ctx, common.ErrorStatus, err)
+		return
+	}
+	response.ResultOk(ctx, userInfo)
 }

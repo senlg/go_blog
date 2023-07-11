@@ -1,3 +1,7 @@
 [go_blog] [2023/07/04 12:44:58][41;37merror  [0m upload_file_api.go:87 go_blog/api.(*UploadFile).Upload err: record not found
  
 [go_blog] [2023/07/04 14:32:46][43;37mwarning[0m tool.go:25 go_blog/utils.VerificationDateList parsing time "" as "2006-01-02 15:04:05": cannot parse "" as "2006" 
+[go_blog] [2023/07/08 22:27:59][41;37merror  [0m article_api.go:53 go_blog/api.(*ArticleApi).CreateArticle Error 1054 (42S22): Unknown column 'article_model_id' in 'field list' 
+[go_blog] [2023/07/08 22:33:46][41;37merror  [0m article_api.go:51 go_blog/api.(*ArticleApi).CreateArticle Error 1054 (42S22): Unknown column 'article_model_id' in 'field list' 
+[go_blog] [2023/07/08 22:38:14][41;37mfatal  [0m db.go:23 go_blog/flag.MigratorTables invalid field found for struct go_blog/models.TagModel's field ArticleModels: define a valid foreign key for relations or implement the Valuer/Scanner interface 
+[go_blog] [2023/07/09 02:26:06][41;37merror  [0m article_api.go:90 go_blog/api.(*ArticleApi).UpdateArticle Error 1054 (42S22): Unknown column 'article_tags.article_id' in 'where clause' 

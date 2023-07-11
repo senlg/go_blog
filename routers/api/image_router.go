@@ -7,6 +7,8 @@ import (
 )
 
 func InitImageApi(apiGroup *gin.RouterGroup) {
-	i := api.ImageApi{}
+	var i api.ImageApi
 	apiGroup.POST("get_image_list", i.FindImageList)
+	apiGroup.POST("change_img_info", i.ChangeImageInfo)
+	apiGroup.DELETE("delete_images", i.DeleteImage)
 }

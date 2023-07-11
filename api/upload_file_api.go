@@ -7,6 +7,7 @@ import (
 	"go_blog/global"
 	"go_blog/models"
 	modelsRes "go_blog/models/res"
+	"go_blog/server"
 	"go_blog/utils"
 	"io"
 	"io/fs"
@@ -43,12 +44,16 @@ func DetermineFileSize(file *multipart.FileHeader) bool {
 	return (int64(file.Size) / int64(1024*1024)) < global.Config.UploadConfig.LimitSize
 }
 
+// 上传图片
 func UploadImageHandle(f *UploadFile, res *common.Response, c *gin.Context) (ResponseList []modelsRes.FileUploadInfo) {
 	useType := c.PostForm("use_type")
+	fileSource := c.PostForm("file_source")
+
 	if useType == "" {
 		res.ResultWithError(c, common.RequestError, errors.New("缺少参数"))
 		return
 	}
+
 	fileList, err := c.MultipartForm()
 	if err != nil {
 		res.ResultWithError(c, common.UploadError, err)
@@ -56,7 +61,7 @@ func UploadImageHandle(f *UploadFile, res *common.Response, c *gin.Context) (Res
 	}
 
 	var dbfileList []models.ImageModel
-	images, ok := fileList.File[f.RequestKey]
+	files, ok := fileList.File[f.RequestKey]
 	if !ok {
 		res.ResultWithError(c, common.UploadError, errors.New("请选择文件上传"))
 		return
@@ -69,81 +74,66 @@ func UploadImageHandle(f *UploadFile, res *common.Response, c *gin.Context) (Res
 		}
 	}
 
-	for _, file := range images {
-		i := strings.Split(file.Filename, ".")
-		fileType := i[len(i)-1]
-		e := utils.Find[string](global.Config.UploadConfig.ImgAccessType, fileType)
-		if !e {
-			ResponseList = append(ResponseList, modelsRes.FileUploadInfo{
-				FileName:  file.Filename,
-				IsSuccess: false,
-				Msg:       fmt.Sprintf("上传文件格式不正确,当前文件格式为%s", fileType),
-			})
-			continue
-		}
+	for _, file := range files {
+		filepath := path.Join(global.Config.UploadConfig.BasePath, f.RequestKey, file.Filename)
+		FileUploadInfo, dbFileInfo := server.Server.ImageServer.UploadSingleFileServer(file, map[string]string{"useType": useType, "fileSource": fileSource})
 
-		fileReader, err := file.Open()
-		if err != nil {
-			global.Log.Errorln(err.Error())
-		}
-		byteAr, err := io.ReadAll(fileReader)
-		if err != nil {
-			global.Log.Errorln(err.Error())
-		}
-		md5str := utils.Md5(byteAr, "")
-		imageM := models.ImageModel{}
-		err = global.DB.Take(&imageM, "md5 = ?", md5str).Error
-		if err == nil {
-			// 找到相同md5图片
-			ResponseList = append(ResponseList, modelsRes.FileUploadInfo{
-				FileName:  imageM.Url,
-				IsSuccess: true,
-				Msg:       "图片已存在",
-			})
+		if FileUploadInfo.IsSuccess {
+			dbfileList = append(dbfileList, dbFileInfo)
+			ResponseList = append(ResponseList, FileUploadInfo)
 			continue
-		}
-		if DetermineFileSize(file) {
-			filepath := path.Join(global.Config.UploadConfig.BasePath, f.RequestKey, file.Filename)
-			err := c.SaveUploadedFile(file, filepath)
-			if err != nil {
-				ResponseList = append(ResponseList, modelsRes.FileUploadInfo{
-					FileName:  filepath,
-					IsSuccess: false,
-					Msg:       err.Error(),
-				})
-				continue
-			}
-			ut, err := strconv.Atoi(useType)
-			if err != nil {
-				ut = 5
-			}
-			dbfileList = append(dbfileList, models.ImageModel{
-				Url:      filepath,
-				UseType:  models.ImageUseType(ut),
-				TypeName: fileType,
-				Md5:      md5str,
-				Enable:   "1",
-			})
-			ResponseList = append(ResponseList, modelsRes.FileUploadInfo{
-				FileName:  filepath,
-				IsSuccess: true,
-				Msg:       "上传成功",
-			})
+		} else if !FileUploadInfo.IsSuccess && dbFileInfo.Url == "" {
+			ResponseList = append(ResponseList, FileUploadInfo)
+			continue
 		} else {
-			ResponseList = append(ResponseList, modelsRes.FileUploadInfo{
-				FileName:  file.Filename,
-				IsSuccess: false,
-				Msg:       fmt.Sprintf("文件大小超出限制大小,当前文件大小为%.2dMB,设定大小为%dMB", file.Size, global.Config.UploadConfig.LimitSize),
-			})
+			if DetermineFileSize(file) {
+
+				err := c.SaveUploadedFile(file, filepath)
+				if err != nil {
+					ResponseList = append(ResponseList, modelsRes.FileUploadInfo{
+						FileName:  file.Filename,
+						IsSuccess: false,
+						Msg:       err.Error(),
+					})
+					return
+				}
+
+				dbfileList = append(dbfileList, models.ImageModel{
+					Url:      filepath,
+					UseType:  dbFileInfo.UseType,
+					TypeName: dbFileInfo.TypeName,
+					Md5:      dbFileInfo.Md5,
+					Enable:   "1",
+				})
+				ResponseList = append(ResponseList, modelsRes.FileUploadInfo{
+					FileName:  file.Filename,
+					FileUrl:   filepath,
+					IsSuccess: true,
+					Msg:       "上传成功",
+				})
+			} else {
+				ResponseList = append(ResponseList, modelsRes.FileUploadInfo{
+					FileName:  file.Filename,
+					IsSuccess: false,
+					Msg:       fmt.Sprintf("文件大小超出限制大小,当前文件大小为%.2dMB,设定大小为%dMB", file.Size, global.Config.UploadConfig.LimitSize),
+				})
+			}
 		}
 	}
+
 	if len(dbfileList) > 0 {
 		global.DB.Create(&dbfileList)
 	}
 	return
 }
+
+// 上传文件
 func UploadFileHandle(f *UploadFile, res *common.Response, c *gin.Context) (ResponseList []modelsRes.FileUploadInfo) {
 	useType := c.PostForm("use_type")
+	fileSource := c.PostForm("file_source")
+	if fileSource == "" {
+		fileSource = string(rune(models.FileTypeLocal))
+	}
 	if useType == "" {
 		res.ResultWithError(c, common.RequestError, errors.New("缺少参数"))
 		return
@@ -195,7 +185,8 @@ func UploadFileHandle(f *UploadFile, res *common.Response, c *gin.Context) (Resp
 		if err == nil {
 			// 找到相同md5图片
 			ResponseList = append(ResponseList, modelsRes.FileUploadInfo{
-				FileName:  imageM.Url,
+				FileUrl:   imageM.Url,
+				FileName:  imageM.FileName,
 				IsSuccess: true,
 				Msg:       "图片已存在",
 			})
@@ -206,7 +197,8 @@ func UploadFileHandle(f *UploadFile, res *common.Response, c *gin.Context) (Resp
 			err := c.SaveUploadedFile(file, filepath)
 			if err != nil {
 				ResponseList = append(ResponseList, modelsRes.FileUploadInfo{
-					FileName:  filepath,
+					FileUrl:   filepath,
+					FileName:  file.Filename,
 					IsSuccess: false,
 					Msg:       err.Error(),
 				})
@@ -224,7 +216,8 @@ func UploadFileHandle(f *UploadFile, res *common.Response, c *gin.Context) (Resp
 				Enable:   "1",
 			})
 			ResponseList = append(ResponseList, modelsRes.FileUploadInfo{
-				FileName:  filepath,
+				FileUrl:   filepath,
+				FileName:  file.Filename,
 				IsSuccess: true,
 				Msg:       "上传成功",
 			})

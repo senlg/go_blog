@@ -62,14 +62,16 @@ func (r *Response) ResultOk(ctx *gin.Context, data any) {
 	r.Result(ctx)
 }
 
-// 返回json格式错误响应
+// 返回错误响应
 func (r *Response) ResultWithError(ctx *gin.Context, code StatusType, err error) {
 	r.Code = code
 	r.Msg = err.Error()
+	r.Data = ""
 	ctx.JSON(http.StatusOK, r)
 }
 
 // 根据Code获取msg
-func (r *Response) GetMsg() {
+func (r *Response) GetMsg() string {
 	r.Msg = MyStatusMap[r.Code]
+	return r.Msg
 }

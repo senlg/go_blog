@@ -10,6 +10,7 @@ system:
   host: "0.0.0.0"
   port: 9527
   env: release
+  secret: "go_blog"
 logger:
   level: debug
   prefix: "go_blog"
@@ -21,7 +22,7 @@ qiniu:
   secret_key: "K16csbFq4onVbtLlJjjwgZmQsqId8RW0X4OHRfX5"
   bucket: "senlg"
   cdn: "rx1m9mu26.hb-bkt.clouddn.com"
-  zone: "华北-河北"
+  zone: "z1"
   size: 5120
 upload_config:
   base_path: "static"

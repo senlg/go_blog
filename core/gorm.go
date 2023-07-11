@@ -14,7 +14,7 @@ func InitGorm() (db *gorm.DB) {
 		global.Log.Warnln(" Mysql Host 配置为空 取消连接数据库")
 	}
 	dsn := global.Config.Mysql.GetDsn()
-	if global.Config.System.Env == "dev" {
+	if global.Config.Mysql.LogLevel == "dev" {
 		global.MysqlLog = logger.Default.LogMode(logger.Info)
 	} else {
 		global.MysqlLog = logger.Default.LogMode(logger.Error)

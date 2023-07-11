@@ -2,6 +2,7 @@ package routers
 
 import (
 	"go_blog/global"
+	"go_blog/middleware"
 	"go_blog/routers/api"
 	"go_blog/routers/static"
 
@@ -16,10 +17,16 @@ func InitRouter() *gin.Engine {
 	// 静态文件api
 	static.InitStaticSource(router)
 	apiGroup := router.Group("api")
+	apiGroup.Use(middleware.JwtMiddleware())
+	// 用户api
 	api.InitUserGroupApi(apiGroup)
 	// 上传api
 	api.InitUploadApi(apiGroup)
 	// 图片api
 	api.InitImageApi(apiGroup)
+	// 标签api
+	api.InitTagApi(apiGroup)
+	// 文章api
+	api.InitArticleApi(apiGroup)
 	return router
 }
