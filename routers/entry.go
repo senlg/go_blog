@@ -17,6 +17,7 @@ func InitRouter() *gin.Engine {
 	// 静态文件api
 	static.InitStaticSource(router)
 	apiGroup := router.Group("api")
+	// jwt中间件
 	apiGroup.Use(middleware.JwtMiddleware())
 	// 用户api
 	api.InitUserGroupApi(apiGroup)

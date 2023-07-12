@@ -22,6 +22,22 @@ func InitConf() *config.Config {
 	if err != nil {
 		log.Fatalf("Config Init Unmarshal Error: %v", err)
 	}
-	log.Printf("Config yaml File load init success!")
+	log.Printf("Config yaml File load init success! \n")
 	return c
+}
+
+func InitIntercept() *config.InterceptApiYaml {
+	const InterceptApiFile = "routers/intercept_api.yaml"
+	i := &config.InterceptApiYaml{}
+	yamlConf, err := ioutil.ReadFile(InterceptApiFile)
+	if err != nil {
+		panic(fmt.Errorf("get yamlFile error: %v", err))
+	}
+	err = yaml.Unmarshal(yamlConf, i)
+	if err != nil {
+		log.Fatalf("Config Init Unmarshal Error: %v", err)
+	}
+	log.Printf("InterceptApi yaml File load init success! \n")
+	return i
+
 }

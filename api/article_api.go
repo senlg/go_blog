@@ -158,9 +158,8 @@ func (a *ArticleApi) GetArticleList(ctx *gin.Context) {
 	if requestStruct.Title != "" {
 		tx = tx.Where(fmt.Sprintf("title like '%%%s%%' ", requestStruct.Title))
 	}
-
-	if requestStruct.TagIds != nil && len(requestStruct.TagIds) > 0 {
-		tx = tx.Preload("Tags")
+	tx = tx.Preload("Tags")
+	if len(requestStruct.TagIds) > 0 {
 		tx = tx.Joins("JOIN article_tags at ON at.article_id = article_models.id JOIN tag_models tm ON tm.id = at.tag_id").Where("tm.id in ?", requestStruct.TagIds).Group("at.article_id")
 		err := tx.Error
 		if err != nil {

@@ -17,3 +17,8 @@ type ArticleListRequest struct {
 	Title           string `json:"title"`
 	TagIds          []int  `json:"tag_ids"`
 }
+
+type CollectArticleRequset struct {
+	CollectId uint `json:"collect_id"`
+	UserId    uint `json:"user_id"`
+}

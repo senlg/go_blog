@@ -6,7 +6,8 @@ import (
 )
 
 func MigratorTables() {
-	global.DB.SetupJoinTable(&models.UserModel{}, "CollectsModels", &models.UserCollect{})
+	global.DB.SetupJoinTable(&models.UserModel{}, "CollectsModels", &models.UserCollect{}) // 自定义中间结构体必须要手动指定中间表来告诉gorm 谁和谁链接
+	global.DB.SetupJoinTable(&models.ArticleModel{}, "UserModels", &models.UserCollect{})  // 自定义中间结构体必须要手动指定中间表来告诉gorm 谁和谁链接
 	if global.DB.Error != nil {
 		global.Log.Fatal(global.DB.Error)
 		return

@@ -2,7 +2,6 @@ package flag
 
 import (
 	"flag"
-	"go_blog/global"
 )
 
 func Parse() {
@@ -13,10 +12,7 @@ func Parse() {
 }
 
 func Migrator(isMigrator bool) {
-	if isMigrator {
-		MigratorTables()
-		global.Log.Exit(1)
-	} else {
+	// 无论如何因为自定义中间表所以要程序开始运行时进行关联
+	MigratorTables()
 
-	}
 }

@@ -11,8 +11,22 @@ type RegisterUser struct {
 }
 
 type Login struct {
-	UserName    string `json:"user_name"`    // 用户名
-	Password    string `json:"password"`     // 密码
-	Captcha     string `json:"captcha"`      // 验证码
+	UserName string `json:"user_name"` // 用户名
+	Password string `json:"password"`  // 密码
+	// Captcha     string `json:"captcha"`      // 验证码
 	LoginAdress string `json:"login_adress"` //登录地址
+}
+
+type UserInfo struct {
+	UserId uint `json:"user_id"`
+}
+type UserInfoRequest struct {
+	// UserId   uint   `json:"user_id"`
+	UserName string `json:"user_name"` // 用户名
+	Limit    int    `json:"limit"`
+	Page     int    `json:"page"`
+	// NickName string `json:"nick_name"` 	// 昵称
+}
+type DeleteUserInfo struct {
+	Ids []uint `json:"ids"`
 }

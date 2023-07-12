@@ -9,8 +9,9 @@ import (
 )
 
 var (
-	Config   *config.Config
-	DB       *gorm.DB
-	Log      *logrus.Logger
-	MysqlLog logger.Interface
+	Config       *config.Config
+	DB           *gorm.DB
+	Log          *logrus.Logger
+	MysqlLog     logger.Interface
+	InterceptApi *config.InterceptApiYaml
 )

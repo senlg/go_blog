@@ -64,8 +64,9 @@ type LoginRecordModel struct {
 
 // 自定义收藏文章表
 type UserCollect struct {
-	CreatedAt time.Time
-	gorm.DeletedAt
-	UserId    uint `gorm:"primaryKey"`
-	ArticleId uint `gorm:"primaryKey"`
+	ID        uint           `gorm:"primarykey" json:"id"`
+	CreatedAt XTime          `json:"created_at"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
+	UserId    uint           `gorm:"primaryKey"`
+	ArticleId uint           `gorm:"primaryKey"`
 }

@@ -1,6 +1,7 @@
 package api
 
 import (
+	"errors"
 	"fmt"
 	"go_blog/common"
 	"go_blog/global"
@@ -17,19 +18,34 @@ type User struct{}
 
 // 获取用户信息
 func (u *User) GetUserInfo(ctx *gin.Context) {
-	ctx.Next()
+	var requestStruct req.UserInfo
+	var response common.Response
+	ctx.BindJSON(&requestStruct)
+	if requestStruct.UserId == 0 {
+		response.ResultWithError(ctx, common.RequestError, errors.New("缺少必要参数"))
+		return
+	}
 	var user models.UserModel
 	// var userInfo res.UserResModel
-	global.DB.Association("ArticleModels").Find(&user, "id = ?", 1)
-	fmt.Printf("\n%+v\n", &user)
-	res := common.Response{
-		Code: common.SucceedStatus,
-		Data: &user,
-	}
+	global.DB.Preload("ArticleModels").Preload("CollectsModels").Find(&user, "id = ?", requestStruct.UserId)
 	if global.DB.Error != nil {
 		global.Log.Warnln(global.DB.Error)
+		response.ResultWithError(ctx, common.RequestError, global.DB.Error)
+		return
 	}
-	res.Result(ctx)
+
+	var userInfo = res.UserInfo{
+		Id:            user.ID,
+		UserName:      user.UserName,
+		NickName:      user.NickName,
+		AvatarUrl:     user.NickName,
+		Addr:          user.Addr,
+		Role:          user.Role,
+		Phone:         user.Phone,
+		ReleaseCount:  len(user.ArticleModels),
+		CollectsCount: len(user.CollectsModels),
+	}
+	response.ResultOk(ctx, userInfo)
 }
 
 // 创建用户
@@ -59,6 +75,36 @@ func (u *User) CreateUserInfo(ctx *gin.Context) {
 	res.Result(ctx)
 }
 
+// 查询用户列表
+func (u *User) GetUserInfoList(ctx *gin.Context) {
+	var requestStruct req.UserInfoRequest
+	var response common.Response
+	ctx.BindJSON(&requestStruct)
+	tx := global.DB.Model(&models.UserModel{})
+	if requestStruct.Limit < 1 {
+		requestStruct.Limit = 5
+
+	}
+	if requestStruct.Page < 1 {
+		requestStruct.Page = 1
+	}
+	if requestStruct.UserName != "" {
+		tx = tx.Where("username = ?", requestStruct.UserName)
+	}
+	var userList []res.UserItem
+	var count int64
+	offset := requestStruct.Limit * (requestStruct.Page - 1)
+	err := tx.Preload("ReleaseCount").Limit(requestStruct.Limit).Offset(offset).Scan(&userList).Count(&count).Error
+	if err != nil {
+		response.ResultWithError(ctx, common.ErrorStatus, err)
+		return
+	}
+	response.ResultOk(ctx, common.ListResponse[res.UserItem]{
+		List:  userList,
+		Count: count,
+	})
+}
+
 // 登录
 func (u *User) Login(ctx *gin.Context) {
 	var loginJson req.Login
@@ -69,7 +115,21 @@ func (u *User) Login(ctx *gin.Context) {
 	if err != nil {
 		response.ResultWithError(ctx, common.ErrorStatus, err)
 	}
-	global.DB.Preload("ArticleModels").Preload("CollectsModels").Where("user_name = ?", loginJson.UserName).Find(&userModel)
+	if loginJson.UserName == "" {
+		response.ResultWithError(ctx, common.RequestError, errors.New("缺少必要参数"))
+		return
+	}
+	if loginJson.Password == "" {
+		response.ResultWithError(ctx, common.RequestError, errors.New("缺少必要参数"))
+		return
+	}
+
+	Affected := global.DB.Preload("ArticleModels").Preload("CollectsModels").Where("user_name = ? and password = ?", loginJson.UserName, loginJson.Password).Find(&userModel).RowsAffected
+	if Affected == 0 {
+		global.Log.Infoln(global.DB.Error)
+		response.ResultWithError(ctx, common.RequestError, errors.New("用户名或密码错误"))
+		return
+	}
 	j := jwtauth.Jwt{}
 	claim := &jwtauth.MyCustomClaims{
 		UserID:   userModel.ID,
@@ -104,4 +164,32 @@ func (u *User) Login(ctx *gin.Context) {
 		return
 	}
 	response.ResultOk(ctx, userInfo)
+}
+
+// 删除用户
+func (u *User) DelUser(ctx *gin.Context) {
+
+	var requestStruct req.DeleteUserInfo
+	var response common.Response
+	c, exit := ctx.Get("claim")
+	var role models.Role
+
+	if exit {
+		v, ok := c.(jwtauth.MyCustomClaims)
+		if ok {
+			role = v.Role
+		}
+	}
+	if role != models.PermissionAdmin {
+		response.ResultWithError(ctx, common.RequestError, errors.New("无权限"))
+	}
+	ctx.BindJSON(requestStruct)
+	if len(requestStruct.Ids) < 1 {
+		response.ResultWithError(ctx, common.RequestError, errors.New("ids不能为空"))
+		return
+	}
+
+	count := global.DB.Delete(&models.UserModel{}, requestStruct.Ids).RowsAffected
+	response.ResultOk(ctx, fmt.Sprintf("已删除%d个用户", count))
+
 }

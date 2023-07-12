@@ -7,3 +7,7 @@ type Config struct {
 	Qiniu        Qiniu        `yaml:"qiniu"`
 	UploadConfig UploadConfig `yaml:"upload_config"`
 }
+
+type InterceptApiYaml struct {
+	InterceptPath []string `yaml:"intercept_path"`
+}
