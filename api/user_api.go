@@ -33,7 +33,7 @@ func (u *User) GetUserInfo(ctx *gin.Context) {
 		response.ResultWithError(ctx, common.RequestError, global.DB.Error)
 		return
 	}
-
+	var role = models.Role(user.Role)
 	var userInfo = res.UserInfo{
 		Id:            user.ID,
 		UserName:      user.UserName,
@@ -41,6 +41,7 @@ func (u *User) GetUserInfo(ctx *gin.Context) {
 		AvatarUrl:     user.NickName,
 		Addr:          user.Addr,
 		Role:          user.Role,
+		RoleName:      role.ToString(),
 		Phone:         user.Phone,
 		ReleaseCount:  len(user.ArticleModels),
 		CollectsCount: len(user.CollectsModels),

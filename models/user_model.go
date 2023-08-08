@@ -12,8 +12,21 @@ type Role int
 func (r *Role) MarshalJSON() ([]byte, error) {
 	return json.MarshalIndent(r.toString(), "", " ")
 }
-func (r Role) toString() (str string) {
-	switch r {
+func (r *Role) toString() (str string) {
+	switch *r {
+	case PermissionAdmin:
+		str = "管理员"
+	case PermissionVisitor:
+		str = "游客"
+	case PermissionUser:
+		str = "普通用户"
+	default:
+		str = "未匹配用户"
+	}
+	return
+}
+func (r *Role) ToString() (str string) {
+	switch *r {
 	case PermissionAdmin:
 		str = "管理员"
 	case PermissionVisitor:

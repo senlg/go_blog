@@ -9,11 +9,10 @@ import (
 
 // 图片类型
 const (
-	ImageAvatar  ImageUseType = iota + 1 //头像
-	ImageBanner                          //轮播图
-	ImageArticle                         //文章图片
-	ImageCurrent                         //通用
-	ImageError                           // 上传解析错误时
+	ImageAvatar  ImageUseType = iota + 1 // 头像
+	ImageBanner                          // 轮播图
+	ImageArticle                         // 文章图片
+	ImageCommon                          // 通用图片
 )
 
 // 文件类型
@@ -26,7 +25,7 @@ type FileSource int
 
 const (
 	FileTypeLocal FileSource = iota + 1 // 本地
-	FileTypeQiniu FileSource = iota + 1 // 七牛
+	FileTypeQiniu                       // 七牛
 )
 
 // 图片用途

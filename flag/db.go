@@ -19,6 +19,8 @@ func MigratorTables() {
 		&models.CommentModel{},
 		&models.ImageModel{},
 		&models.LoginRecordModel{},
+		&models.AgreeModel{},
+		&models.MenuModel{},
 	)
 	if err != nil {
 		global.Log.Fatal(err.Error())

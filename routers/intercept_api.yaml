@@ -13,3 +13,5 @@ intercept_path:
   - del_user
   - collect_article
   - cancel_article
+  - get_menu
+  - create_menu

@@ -30,3 +30,11 @@ type UserInfoRequest struct {
 type DeleteUserInfo struct {
 	Ids []uint `json:"ids"`
 }
+
+// 修改密码
+type ChangePassWord struct {
+	UserName    string `json:"user_name"` // 用户名
+	OldPassword string `json:"old_password"`
+	Password    string `json:"password"` // 密码
+	Code        string `json:"code"`
+}

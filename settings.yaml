@@ -21,7 +21,7 @@ qiniu:
   access_key: "LyPus3VQOK4QdLEE6FRMRfFY3u0z7Fkq3QF6ONIn"
   secret_key: "K16csbFq4onVbtLlJjjwgZmQsqId8RW0X4OHRfX5"
   bucket: "senlg"
-  cdn: "rx1m9mu26.hb-bkt.clouddn.com"
+  cdn: "https://qiniu.senlg.asia"
   zone: "z1"
   size: 5120
 upload_config:

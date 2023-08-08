@@ -29,5 +29,10 @@ func InitRouter() *gin.Engine {
 	api.InitTagApi(apiGroup)
 	// 文章api
 	api.InitArticleApi(apiGroup)
+	// 留言api
+	api.InitCommoentApi(apiGroup)
+	// 菜的api
+	api.InitMenuApi(apiGroup)
+
 	return router
 }

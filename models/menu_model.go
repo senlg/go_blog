@@ -1,6 +1,6 @@
 package models
 
-type MenuType int
+type MenuType uint
 
 type MenuModel struct {
 	Model
@@ -8,4 +8,6 @@ type MenuModel struct {
 	MenuType     `json:"menu_type"`
 	ParentId     *uint       `json:"parent_id"`
 	ChildrenMenu []MenuModel `gorm:"foreignKey:ParentId"`
+	UserId       uint
+	UserName     string
 }
