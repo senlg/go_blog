@@ -1,0 +1,5 @@
+.vscode/launch.json
+*.log
+*.exe
+static/
+settings.yaml

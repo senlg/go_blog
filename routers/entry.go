@@ -31,7 +31,7 @@ func InitRouter() *gin.Engine {
 	api.InitArticleApi(apiGroup)
 	// 留言api
 	api.InitCommoentApi(apiGroup)
-	// 菜的api
+	// 菜单api
 	api.InitMenuApi(apiGroup)
 
 	return router

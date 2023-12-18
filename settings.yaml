@@ -31,3 +31,22 @@ upload_config:
     - "jpeg"
     - "png"
     - "jpg"
+intercept_router:
+  intercept_path:
+    - create_article
+    - update_article
+    - delete_article
+    - change_img_info
+    - delete_images
+    - create_tag
+    - update_tag
+    - delete_tags
+    - upload_image
+    - upload_file
+    - getUserList
+    - del_user
+    - collect_article
+    - cancel_article
+    - get_menu
+    - create_menu
+
