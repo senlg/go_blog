@@ -15,7 +15,7 @@ func JwtMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		pathList := strings.Split(ctx.Request.URL.Path, "/")
 		lastPath := pathList[len(pathList)-1]
-		if utils.Find[string](global.InterceptApi.InterceptPath, lastPath) {
+		if utils.Find[string](global.Config.InterceptApi.InterceptPath, lastPath) {
 			token := ctx.Request.Header.Get("token")
 			response := common.Response{}
 			if token == "" {

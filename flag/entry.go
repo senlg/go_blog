@@ -7,7 +7,7 @@ import (
 )
 
 func Parse() {
-	db := flag.Bool("db", false, "初始化数据库表")
+	db := flag.Bool("db", true, "是否初始化数据库表")
 	flag.Parse()
 	if *db {
 		Migrator(*db)

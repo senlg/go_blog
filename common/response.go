@@ -40,7 +40,7 @@ func init() {
 }
 
 const (
-	SucceedStatus StatusType = 0    // 成功响应
+	SucceedStatus StatusType = 200  // 成功响应
 	ErrorStatus   StatusType = 1001 // 系统错误
 	ErrorAuth     StatusType = 1002 // 用户信息过期
 	UploadError   StatusType = 1003 // 上传失败

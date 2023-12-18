@@ -11,7 +11,7 @@ func main() {
 	// 读取配置文件
 	global.Config = core.InitConf()
 	// 拦截api路径加载
-	global.InterceptApi = core.InitIntercept()
+	// global.InterceptApi = core.InitIntercept()
 	// 初始化日志配置
 	global.Log = core.InitLogger()
 	// global.Log.Warnln("wran")

@@ -12,6 +12,7 @@ func MigratorTables() {
 		global.Log.Fatal(global.DB.Error)
 		return
 	}
+	//根据定义的模型结构自动创建或更新数据库表。所以这段代码的作用是将定义的模型结构映射到数据库表，并使用 InnoDB 引擎进行创建或更新。
 	err := global.DB.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(
 		&models.UserModel{},
 		&models.ArticleModel{},

@@ -31,6 +31,8 @@ func VerificationDateList(dateList []string) (ok bool, err error) {
 }
 
 // Md5
+// b 文件流
+// salt 加的盐
 func Md5(b []byte, salt string) string {
 	h := md5.New()
 
