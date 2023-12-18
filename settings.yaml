@@ -18,8 +18,8 @@ logger:
   show_line: true
   log_in_console: true
 qiniu:
-  access_key: "LyPus3VQOK4QdLEE6FRMRfFY3u0z7Fkq3QF6ONIn"
-  secret_key: "K16csbFq4onVbtLlJjjwgZmQsqId8RW0X4OHRfX5"
+  access_key: "LyPus3VQOK4QdLEE6FRMRfFY3u0z7Fkq3QF6ONInxxx"
+  secret_key: "Kxxx16csbFq4onVbtLlJjjwgZmQsqId8RW0X4OHRfX5"
   bucket: "senlg"
   cdn: "https://qiniu.senlg.asia"
   zone: "z1"
