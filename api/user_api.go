@@ -53,6 +53,7 @@ func (u *User) GetUserInfo(ctx *gin.Context) {
 func (u *User) CreateUserInfo(ctx *gin.Context) {
 	var userReg req.RegisterUser
 	ctx.BindJSON(&userReg)
+
 	fmt.Printf("ctx.Request: %+v\n", &userReg)
 
 	user := models.UserModel{

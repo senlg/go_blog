@@ -1,7 +1,7 @@
 package req
 
 type RegisterUser struct {
-	UserName  string `json:"name"`
+	UserName  string `json:"user_name"`
 	NickName  string `json:"nick_name"`
 	AvatarUrl string `json:"avatar_url"`
 	Addr      string `json:"addr"`

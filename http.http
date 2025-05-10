@@ -4,3 +4,42 @@
 
 POST http://localhost:9527/api/get_image_list
 Content-Type: application/x-www-form-urlencoded;charset=utf-8
+
+
+
+
+
+### 删除
+DELETE http://localhost:9527/api/delete_images HTTP/1.1
+Content-Type: application/json
+token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjExLCJVc2VybmFtZSI6InMiLCJSb2xlIjoyLCJHcmFudFNjb3BlIjoicmVhZF91c2VyX2luZm8iLCJpc3MiOiJBdXRoX1NlcnZlciIsInN1YiI6InMiLCJhdWQiOlsiQW5kcm9pZF9BUFAiLCJJT1NfQVBQIl0sImV4cCI6MTc0NTk1MjQ5MiwibmJmIjoxNzQ1OTQ4ODkyLCJpYXQiOjE3NDU5NDg4OTIsImp0aSI6ImxxZnVLMlJZdmcifQ.tO5nd1bcGiatd5FeMS0oksOVPbGAc3xvQ_b9Jw9ni0g
+
+{
+    "ids": "1"
+}
+
+
+
+### 添加用户
+POST http://localhost:9527/api/create_user HTTP/1.1
+Content-Type: application/json
+
+{
+    "user_name":"s",
+    "nick_name":"swl",
+    "avatar_url":"12345",
+    "addr":"",
+    "phone":"山东",
+    "password":"9090@qq.com",
+    "email":"12324345"
+}
+
+###
+POST http://localhost:9527/api/login HTTP/1.1
+Content-Type: application/json
+
+{
+    "tst":"cjdksjkf",
+    "user_name":"s",
+    "password":"9090@qq.com"
+}

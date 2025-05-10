@@ -120,8 +120,13 @@ func (i *ImageApi) DeleteImage(ctx *gin.Context) {
 	var imgModel []models.ImageModel
 	var count int64
 	global.DB.Find(&imgModel, idsStruct.Ids).Count(&count)
+
 	response := common.Response{}
 	if count == 0 {
+		if global.DB.Error != nil {
+			response.ResultWithError(ctx, common.RequestError, global.DB.Error)
+			return
+		}
 		response.ResultWithError(ctx, common.RequestError, errors.New("图片不存在"))
 		return
 	}
