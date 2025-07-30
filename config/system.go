@@ -11,6 +11,6 @@ type System struct {
 
 // 获取监听地址
 func (s *System) GetAdress() string {
-
+	fmt.Printf("server listen in http://%s:%d",s.Host, s.Port)
 	return fmt.Sprintf("%s:%d", s.Host, s.Port)
 }

@@ -15,7 +15,7 @@ func InitGorm() (db *gorm.DB) {
 	}
 	dsn := global.Config.Mysql.GetDsn()
 	if global.Config.Mysql.LogLevel == "dev" {
-		global.MysqlLog = logger.Default.LogMode(logger.Info)
+		global.MysqlLog = logger.Default.LogMode(logger.Warn)
 	} else {
 		global.MysqlLog = logger.Default.LogMode(logger.Error)
 	}

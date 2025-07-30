@@ -20,7 +20,6 @@ func main() {
 	// global.Log.Debugln("debug")
 	// 连接数据库
 	global.DB = core.InitGorm()
-
 	myFlag.Parse()
 	router := routers.InitRouter()
 	router.Run(global.Config.System.GetAdress())

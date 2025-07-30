@@ -17,6 +17,15 @@ import (
 type User struct{}
 
 // 获取用户信息
+// GetUserInfo
+// @Summary 获取用户信息
+// @Produce json
+// @Description 获取用户信息
+// @Tags users
+// @Accept json
+// @Param user_id body req.UserInfo true "用户ID"
+// @Success 200 {object} res.UserInfo "成功"
+// @Router /api/get_user [Post]
 func (u *User) GetUserInfo(ctx *gin.Context) {
 	var requestStruct req.UserInfo
 	var response common.Response
@@ -64,7 +73,7 @@ func (u *User) CreateUserInfo(ctx *gin.Context) {
 		AvatarUrl: userReg.AvatarUrl,
 		Addr:      userReg.Addr,
 		Email:     userReg.Email,
-		Role:      2,
+		Role:      models.PermissionUser,
 	}
 	global.DB.Create(&user)
 	res := common.Response{
@@ -91,7 +100,7 @@ func (u *User) GetUserInfoList(ctx *gin.Context) {
 		requestStruct.Page = 1
 	}
 	if requestStruct.UserName != "" {
-		tx = tx.Where("username = ?", requestStruct.UserName)
+		tx = tx.Where("user_name = ?", requestStruct.UserName)
 	}
 	var userList []res.UserItem
 	var count int64

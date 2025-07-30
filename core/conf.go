@@ -22,7 +22,7 @@ func InitConf() *config.Config {
 	if err != nil {
 		log.Fatalf("Config Init Unmarshal Error: %v", err)
 	}
-	log.Printf("Config yaml File load init success! \n")
+	log.Printf("\n Config yaml File load init success! \n")
 	return c
 }
 

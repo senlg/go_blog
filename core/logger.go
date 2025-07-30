@@ -54,7 +54,7 @@ func (l *LogFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 }
 func InitLogger() *logrus.Logger {
 	mlog := logrus.New()
-	flog, err := os.OpenFile("log.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0777)
+	flog, err := os.OpenFile("logs/log.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0777)
 	if err != nil {
 		log.Panic(err.Error())
 	}

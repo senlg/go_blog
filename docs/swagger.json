@@ -1,0 +1,108 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/api/get_user": {
+            "post": {
+                "description": "获取用户信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "获取用户信息",
+                "parameters": [
+                    {
+                        "description": "用户ID",
+                        "name": "user_id",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.UserInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "$ref": "#/definitions/res.UserInfo"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.Role": {
+            "type": "integer",
+            "enum": [
+                1,
+                2,
+                3
+            ],
+            "x-enum-comments": {
+                "PermissionAdmin": "管理员",
+                "PermissionUser": "普通用户",
+                "PermissionVisitor": "游客"
+            },
+            "x-enum-varnames": [
+                "PermissionAdmin",
+                "PermissionUser",
+                "PermissionVisitor"
+            ]
+        },
+        "req.UserInfo": {
+            "type": "object",
+            "properties": {
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "res.UserInfo": {
+            "type": "object",
+            "properties": {
+                "addr": {
+                    "type": "string"
+                },
+                "avatar_url": {
+                    "type": "string"
+                },
+                "collects_count": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "nick_name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "release_count": {
+                    "type": "integer"
+                },
+                "role": {
+                    "$ref": "#/definitions/models.Role"
+                },
+                "role_name": {
+                    "type": "string"
+                },
+                "token": {
+                    "type": "string"
+                },
+                "user_name": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

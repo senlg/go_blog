@@ -1,0 +1,71 @@
+definitions:
+  models.Role:
+    enum:
+    - 1
+    - 2
+    - 3
+    type: integer
+    x-enum-comments:
+      PermissionAdmin: 管理员
+      PermissionUser: 普通用户
+      PermissionVisitor: 游客
+    x-enum-varnames:
+    - PermissionAdmin
+    - PermissionUser
+    - PermissionVisitor
+  req.UserInfo:
+    properties:
+      user_id:
+        type: integer
+    type: object
+  res.UserInfo:
+    properties:
+      addr:
+        type: string
+      avatar_url:
+        type: string
+      collects_count:
+        type: integer
+      id:
+        type: integer
+      nick_name:
+        type: string
+      phone:
+        type: string
+      release_count:
+        type: integer
+      role:
+        $ref: '#/definitions/models.Role'
+      role_name:
+        type: string
+      token:
+        type: string
+      user_name:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /api/get_user:
+    post:
+      consumes:
+      - application/json
+      description: 获取用户信息
+      parameters:
+      - description: 用户ID
+        in: body
+        name: user_id
+        required: true
+        schema:
+          $ref: '#/definitions/req.UserInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            $ref: '#/definitions/res.UserInfo'
+      summary: 获取用户信息
+      tags:
+      - users
+swagger: "2.0"
